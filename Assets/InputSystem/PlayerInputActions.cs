@@ -35,6 +35,15 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""LampOnOff"",
+                    ""type"": ""Button"",
+                    ""id"": ""95e41fab-78c0-4a51-bd0f-59b5fadf55f1"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -92,6 +101,17 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""action"": ""Movement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9414cd3a-2c7c-4329-8193-bd4265238591"",
+                    ""path"": ""<Keyboard>/f"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""LampOnOff"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -101,6 +121,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         // Player
         m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
         m_Player_Movement = m_Player.FindAction("Movement", throwIfNotFound: true);
+        m_Player_LampOnOff = m_Player.FindAction("LampOnOff", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -163,11 +184,13 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private readonly InputActionMap m_Player;
     private List<IPlayerActions> m_PlayerActionsCallbackInterfaces = new List<IPlayerActions>();
     private readonly InputAction m_Player_Movement;
+    private readonly InputAction m_Player_LampOnOff;
     public struct PlayerActions
     {
         private @PlayerInputActions m_Wrapper;
         public PlayerActions(@PlayerInputActions wrapper) { m_Wrapper = wrapper; }
         public InputAction @Movement => m_Wrapper.m_Player_Movement;
+        public InputAction @LampOnOff => m_Wrapper.m_Player_LampOnOff;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -180,6 +203,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Movement.started += instance.OnMovement;
             @Movement.performed += instance.OnMovement;
             @Movement.canceled += instance.OnMovement;
+            @LampOnOff.started += instance.OnLampOnOff;
+            @LampOnOff.performed += instance.OnLampOnOff;
+            @LampOnOff.canceled += instance.OnLampOnOff;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -187,6 +213,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Movement.started -= instance.OnMovement;
             @Movement.performed -= instance.OnMovement;
             @Movement.canceled -= instance.OnMovement;
+            @LampOnOff.started -= instance.OnLampOnOff;
+            @LampOnOff.performed -= instance.OnLampOnOff;
+            @LampOnOff.canceled -= instance.OnLampOnOff;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -207,5 +236,6 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     public interface IPlayerActions
     {
         void OnMovement(InputAction.CallbackContext context);
+        void OnLampOnOff(InputAction.CallbackContext context);
     }
 }
